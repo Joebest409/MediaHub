@@ -1,0 +1,587 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-dashboard"><div class="admin-header">
+
+    <h1>🛠️ Admin Dashboard</h1>
+
+    <p>
+        Welcome,
+        <strong>
+            {{ session.get("admin_username") }}
+        </strong>
+    </p>
+
+</div>
+
+
+<!-- ACTIONS -->
+
+<div class="admin-actions">
+
+    <a
+        href="{{ url_for('upload') }}"
+        class="admin-btn"
+    >
+        📤 Upload New Media
+    </a>
+    
+    
+    <a
+    href="{{ url_for('admin_users') }}"
+    class="admin-btn"
+>
+    👥 Manage Users
+</a>
+
+    <a
+        href="{{ url_for('home') }}"
+        class="admin-btn"
+    >
+        🏠 View Website
+    </a>
+
+    <a
+        href="{{ url_for('admin_logout') }}"
+        class="admin-btn"
+    >
+        🚪 Logout
+    </a>
+    
+    
+    <a
+    href="{{ url_for('admin_downloads') }}"
+    class="admin-btn"
+>
+    📥 Download Activity
+</a>
+
+
+<a
+    href="{{ url_for('admin_notifications') }}"
+    class="admin-btn"
+>
+    🔔 Notifications
+
+    {% if unread_notifications > 0 %}
+
+        <span class="notification-count">
+            {{ unread_notifications }}
+        </span>
+
+    {% endif %}
+
+</a>
+
+</div>
+
+
+<!-- STATISTICS -->
+
+<!-- =================================================
+     ANALYTICS
+     ================================================= -->
+
+<div class="admin-stats">
+
+    <div class="stat-card">
+
+        <h3>
+            🎞️ Total Media
+        </h3>
+
+        <div class="stat-number">
+            {{ total_media }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>
+            🎬 Videos
+        </h3>
+
+        <div class="stat-number">
+            {{ total_videos }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>
+            🎵 Audio
+        </h3>
+
+        <div class="stat-number">
+            {{ total_audio }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>
+            📥 Downloads
+        </h3>
+
+        <div class="stat-number">
+            {{ total_downloads }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <h3>
+            📂 Categories
+        </h3>
+
+        <div class="stat-number">
+            {{ total_categories }}
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MEDIA MANAGEMENT -->
+
+<div class="media-management">
+
+    <h2>📂 Media Management</h2>
+    
+    
+    <form
+    method="GET"
+    action="{{ url_for('admin_dashboard') }}"
+    class="admin-filter-form"
+><input
+    type="text"
+    name="search"
+    placeholder="🔎 Search by title..."
+    value="{{ search }}"
+>
+
+<select name="category">
+
+    <option value="">
+        📂 All Categories
+    </option>
+
+    {% for cat in categories %}
+
+    <option
+        value="{{ cat['category'] }}"
+        {% if selected_category == cat['category'] %}
+            selected
+        {% endif %}
+    >
+        {{ cat['category'] }}
+    </option>
+
+    {% endfor %}
+
+</select>
+
+
+<select name="media_type">
+
+    <option value="">
+        🎵🎬 All Media
+    </option>
+
+    <option
+        value="video"
+        {% if selected_media_type == "video" %}
+            selected
+        {% endif %}
+    >
+        🎬 Videos
+    </option>
+
+    <option
+        value="audio"
+        {% if selected_media_type == "audio" %}
+            selected
+        {% endif %}
+    >
+        🎵 Audio
+    </option>
+
+</select>
+
+
+<button type="submit">
+    🔎 Search
+</button>
+
+
+<a
+    href="{{ url_for('admin_dashboard') }}"
+>
+    🔄 Clear
+</a>
+
+</form>
+
+    {% if media %}
+
+    <div class="admin-table-container">
+
+        <table class="admin-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Title</th>
+
+                    <th>Category</th>
+
+                    <th>Type</th>
+
+                    <th>Downloads</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for item in media %}
+
+                <tr>
+
+                    <td>
+                        {{ item["id"] }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ item["title"] }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ item["category"] }}
+                    </td>
+
+                    <td>
+
+                        <span class="media-badge">
+                            {{ item["media_type"] }}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        📥 {{ item["downloads"] }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{{ url_for(
+                                'media_details',
+                                media_id=item['id']
+                            ) }}"
+                            class="action-btn view-btn"
+                        >
+                            👁️ View
+                        </a>
+
+                        <a
+                            href="{{ url_for(
+                                'edit_media',
+                                media_id=item['id']
+                            ) }}"
+                            class="action-btn edit-btn"
+                        >
+                            ✏️ Edit
+                        </a>
+
+                        <a
+                            href="{{ url_for(
+                                'delete_media',
+                                media_id=item['id']
+                            ) }}"
+                            class="action-btn delete-btn"
+                            onclick="return confirm(
+                                'Are you sure you want to delete this media?'
+                            );"
+                        >
+                            🗑️ Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <p>
+        📭 No media has been uploaded yet.
+    </p>
+    
+    
+    <!-- =================================================
+     ADMIN CHARTS
+     ================================================= -->
+
+<div class="admin-charts">
+
+    <!-- MEDIA TYPE CHART -->
+
+    <div class="chart-card">
+
+        <h2>
+            🎬🎵 Media Types
+        </h2>
+
+        <canvas
+            id="mediaTypeChart"
+        ></canvas>
+
+    </div>
+
+
+    <!-- CATEGORY MEDIA CHART -->
+
+    <div class="chart-card">
+
+        <h2>
+            📂 Media by Category
+        </h2>
+
+        <canvas
+            id="categoryMediaChart"
+        ></canvas>
+
+    </div>
+
+
+    <!-- CATEGORY DOWNLOAD CHART -->
+
+    <div class="chart-card">
+
+        <h2>
+            📥 Downloads by Category
+        </h2>
+
+        <canvas
+            id="categoryDownloadChart"
+        ></canvas>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     CHART JAVASCRIPT
+     ================================================= -->
+
+<script>
+
+    /*
+     * MEDIA TYPE DATA
+     */
+
+    const videoCount =
+        {{ total_videos }};
+
+    const audioCount =
+        {{ total_audio }};
+
+
+    /*
+     * CATEGORY DATA
+     */
+
+    const categoryLabels = [
+        {% for item in category_stats %}
+            {{ item["category"]|tojson }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+
+    const categoryMediaCounts = [
+        {% for item in category_stats %}
+            {{ item["media_count"] }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+
+    const categoryDownloadCounts = [
+        {% for item in category_stats %}
+            {{ item["download_count"] }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+
+    /*
+     * MEDIA TYPE CHART
+     */
+
+    new Chart(
+        document.getElementById(
+            "mediaTypeChart"
+        ),
+        {
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Videos",
+                    "Audio"
+                ],
+
+                datasets: [
+                    {
+                        data: [
+                            videoCount,
+                            audioCount
+                        ]
+                    }
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+                        position: "bottom"
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * MEDIA BY CATEGORY
+     */
+
+    new Chart(
+        document.getElementById(
+            "categoryMediaChart"
+        ),
+        {
+            type: "bar",
+
+            data: {
+
+                labels: categoryLabels,
+
+                datasets: [
+                    {
+                        label: "Media",
+
+                        data:
+                            categoryMediaCounts
+                    }
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+                        beginAtZero: true
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /*
+     * DOWNLOADS BY CATEGORY
+     */
+
+    new Chart(
+        document.getElementById(
+            "categoryDownloadChart"
+        ),
+        {
+            type: "bar",
+
+            data: {
+
+                labels: categoryLabels,
+
+                datasets: [
+                    {
+                        label: "Downloads",
+
+                        data:
+                            categoryDownloadCounts
+                    }
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+                        beginAtZero: true
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+</script>
+
+    {% endif %}
+
+</div>
+
+</div>{% endblock %}
