@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}
+Download Activity
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-dashboard">
+
+    <!-- =================================================
+         HEADER
+         ================================================= -->
+
+    <div class="admin-header">
+
+        <h1>
+            📥 Download Activity
+        </h1>
+
+        <p>
+            Monitor media downloads on MediaHub.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         ACTION BUTTONS
+         ================================================= -->
+
+    <div class="admin-actions">
+
+        <a
+            href="{{ url_for('admin_dashboard') }}"
+            class="admin-btn"
+        >
+            📊 Dashboard
+        </a>
+
+        <a
+            href="{{ url_for('admin_users') }}"
+            class="admin-btn"
+        >
+            👥 Users
+        </a>
+
+        <a
+            href="{{ url_for('admin_logout') }}"
+            class="admin-btn"
+        >
+            🚪 Logout
+        </a>
+
+    </div>
+
+
+    <!-- =================================================
+         SEARCH
+         ================================================= -->
+
+    <form
+        method="GET"
+        action="{{ url_for('admin_downloads') }}"
+        class="admin-filter-form"
+    >
+
+        <input
+            type="text"
+            name="search"
+            placeholder="🔎 Search user, email, media..."
+            value="{{ search }}"
+        >
+
+        <button type="submit">
+            🔎 Search
+        </button>
+
+        <a
+            href="{{ url_for('admin_downloads') }}"
+        >
+            🔄 Clear
+        </a>
+
+    </form>
+
+
+    <!-- =================================================
+         STATISTICS
+         ================================================= -->
+
+    <div class="admin-stats">
+
+        <div class="stat-card">
+
+            <h3>
+                📥 Total Downloads
+            </h3>
+
+            <div class="stat-number">
+                {{ total_downloads }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                👥 Unique Downloaders
+            </h3>
+
+            <div class="stat-number">
+                {{ unique_downloaders }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         MOST DOWNLOADED MEDIA
+         ================================================= -->
+
+    <div class="media-management">
+
+        <h2>
+            🏆 Most Downloaded Media
+        </h2>
+
+        <div class="admin-table-container">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Rank
+                        </th>
+
+                        <th>
+                            Title
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Downloads
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in popular_media %}
+
+                    <tr>
+
+                        <td>
+                            #{{ loop.index }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ item["title"] }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item["media_type"] }}
+                        </td>
+
+                        <td>
+                            {{ item["category"] }}
+                        </td>
+
+                        <td>
+                            📥
+                            {{ item["download_count"] }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            style="text-align:center;"
+                        >
+                            No download data available.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         DOWNLOAD HISTORY
+         ================================================= -->
+
+    <div class="media-management">
+
+        <h2>
+            📋 Download History
+        </h2>
+
+        <div class="admin-table-container">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            User
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Media
+                        </th>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in downloads %}
+
+                    <tr>
+
+                        <td>
+                            {{ item["id"] }}
+                        </td>
+
+                        <td>
+
+                            👤
+
+                            {% if item["username"] %}
+
+                                {{ item["username"] }}
+
+                            {% else %}
+
+                                Guest
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if item["email"] %}
+
+                                {{ item["email"] }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ item["title"] }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ item["media_type"] }}
+                        </td>
+
+                        <td>
+                            {{ item["category"] }}
+                        </td>
+
+                        <td>
+                            {{ item["downloaded_at"] }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="text-align:center;"
+                        >
+                            No download activity found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
