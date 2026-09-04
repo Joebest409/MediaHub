@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}
+User Management
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-dashboard">
+
+    <!-- =================================================
+         HEADER
+         ================================================= -->
+
+    <div class="admin-header">
+
+        <h1>
+            👥 User Management
+        </h1>
+
+        <p>
+            Manage registered MediaHub users.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         ACTIONS
+         ================================================= -->
+
+    <div class="admin-actions">
+
+    <a
+        href="{{ url_for('admin_dashboard') }}"
+        class="admin-btn"
+    >
+        📊 Dashboard
+    </a>
+
+    <a
+        href="{{ url_for('admin_logout') }}"
+        class="admin-btn"
+    >
+        🚪 Logout
+    </a>
+
+</div>
+
+
+    <!-- =================================================
+         SEARCH
+         ================================================= -->
+
+    <form
+        method="GET"
+        action="{{ url_for('admin_users') }}"
+        class="admin-filter-form"
+    >
+
+        <input
+            type="text"
+            name="search"
+            placeholder="🔎 Search username or email..."
+            value="{{ search }}"
+        >
+
+        <button type="submit">
+            🔎 Search
+        </button>
+
+        <a
+            href="{{ url_for('admin_users') }}"
+        >
+            🔄 Clear
+        </a>
+
+    </form>
+
+
+    <!-- =================================================
+         STATISTICS
+         ================================================= -->
+
+    <div class="admin-stats">
+
+        <div class="stat-card">
+
+            <h3>
+                👥 Total Users
+            </h3>
+
+            <div class="stat-number">
+                {{ total_users }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                📥 Total Downloads
+            </h3>
+
+            <div class="stat-number">
+                {{ total_downloads }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                ❤️ Total Favorites
+            </h3>
+
+            <div class="stat-number">
+                {{ total_favorites }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         USER TABLE
+         ================================================= -->
+
+    <div class="media-management">
+
+        <h2>
+            Registered Users
+        </h2>
+
+        <div class="admin-table-container">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Username
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Registered
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for user in users %}
+
+                    <tr>
+
+                        <td>
+                            {{ user["id"] }}
+                        </td>
+
+
+                        <td>
+
+                            👤
+
+                            <strong>
+                                {{ user["username"] }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ user["email"] }}
+                        </td>
+
+
+                        <td>
+                            {{ user["created_at"] }}
+                        </td>
+
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'delete_user',
+                                    user_id=user['id']
+                                ) }}"
+                                style="display:inline;"
+                                onsubmit="return confirm(
+                                    'Are you sure you want to delete this user?'
+                                );"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="action-btn delete-btn"
+                                >
+                                    🗑️ Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            style="text-align:center;"
+                        >
+                            No users found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
