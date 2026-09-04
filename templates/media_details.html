@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ media["title"] }}
+{% endblock %}
+
+{% block content %}
+
+<div class="media-details">
+
+    <!-- =================================================
+         TITLE
+    ================================================== -->
+
+    <h1>
+        {{ media["title"] }}
+    </h1>
+
+
+    <!-- =================================================
+         THUMBNAIL
+    ================================================== -->
+
+    {% if media["thumbnail"] %}
+
+    <img
+        src="{{ url_for(
+            'thumbnail',
+            filename=media['thumbnail']
+        ) }}"
+        class="details-thumbnail"
+        alt="{{ media['title'] }}"
+    >
+
+    {% endif %}
+
+
+    <!-- =================================================
+         VIDEO
+    ================================================== -->
+
+    {% if media["media_type"] == "video" %}
+
+    <video
+        controls
+        class="details-player"
+        poster="{% if media['thumbnail'] %}{{ url_for(
+            'thumbnail',
+            filename=media['thumbnail']
+        ) }}{% endif %}"
+    >
+
+        <source
+            src="{{ url_for(
+                'stream_media',
+                media_id=media['id']
+            ) }}"
+        >
+
+        Your browser does not support
+        video playback.
+
+    </video>
+
+
+    <!-- =================================================
+         AUDIO
+    ================================================== -->
+
+    {% elif media["media_type"] == "audio" %}
+
+    <div class="audio-cover">
+
+        {% if media["thumbnail"] %}
+
+        <img
+            src="{{ url_for(
+                'thumbnail',
+                filename=media['thumbnail']
+            ) }}"
+            class="audio-details-thumbnail"
+            alt="{{ media['title'] }}"
+        >
+
+        {% endif %}
+
+    </div>
+
+
+    <audio
+        controls
+        class="details-audio"
+    >
+
+        <source
+            src="{{ url_for(
+                'stream_media',
+                media_id=media['id']
+            ) }}"
+        >
+
+        Your browser does not support
+        audio playback.
+
+    </audio>
+
+    {% endif %}
+
+
+    <!-- =================================================
+         INFORMATION
+    ================================================== -->
+
+    <div class="media-information">
+
+        <p>
+            📂
+            <strong>Category:</strong>
+
+            {% if media["category"] %}
+
+            <a
+                href="{{ url_for(
+                    'category',
+                    category_name=media['category']
+                ) }}"
+            >
+                {{ media["category"] }}
+            </a>
+
+            {% else %}
+
+            Uncategorized
+
+            {% endif %}
+
+        </p>
+
+
+        <p>
+            📥
+            <strong>Downloads:</strong>
+
+            {{ media["downloads"] }}
+        </p>
+
+
+        <p>
+            📅
+            <strong>Uploaded:</strong>
+
+            {{ media["created_at"] }}
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         DESCRIPTION
+    ================================================== -->
+
+    {% if media["description"] %}
+
+    <div class="media-description">
+
+        <h2>
+            Description
+        </h2>
+
+        <p>
+            {{ media["description"] }}
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- =================================================
+         DOWNLOAD BUTTON
+    ================================================== -->
+
+    <div class="download-section">
+
+        <a
+            href="{{ url_for(
+                'download',
+                media_id=media['id']
+            ) }}"
+            class="download-btn"
+        >
+            📥 Download
+        </a>
+        
+        {% if session.get("user_id") %}
+
+    {% if is_favorite %}
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'remove_favorite',
+                media_id=media['id']
+            ) }}"
+        >
+
+            <button
+                type="submit"
+                class="favorite-btn favorited"
+            >
+                ❤️ Remove from Favorites
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <form
+            method="POST"
+            action="{{ url_for(
+                'add_favorite',
+                media_id=media['id']
+            ) }}"
+        >
+
+            <button
+                type="submit"
+                class="favorite-btn"
+            >
+                ♡ Add to Favorites
+            </button>
+
+        </form>
+
+    {% endif %}
+
+{% else %}
+
+    <p class="favorite-login-message">
+
+        <a href="{{ url_for('login') }}">
+            Login
+        </a>
+
+        to add this media to your Favorites.
+
+    </p>
+
+{% endif %}
+
+    </div>
+
+
+    <!-- =================================================
+         RELATED MEDIA
+    ================================================== -->
+
+    {% if related_media %}
+
+    <div class="related-section">
+
+        <h2>
+            Related Media
+        </h2>
+
+
+        <div class="media-grid">
+
+            {% for item in related_media %}
+
+            <div class="media-card">
+
+
+                {% if item["thumbnail"] %}
+
+                <img
+                    src="{{ url_for(
+                        'thumbnail',
+                        filename=item['thumbnail']
+                    ) }}"
+                    class="thumbnail"
+                    alt="{{ item['title'] }}"
+                >
+
+                {% endif %}
+
+
+                <h3>
+
+                    <a
+                        href="{{ url_for(
+                            'media_details',
+                            media_id=item['id']
+                        ) }}"
+                    >
+
+                        {{ item["title"] }}
+
+                    </a>
+
+                </h3>
+
+
+                <p>
+
+                    📥
+                    {{ item["downloads"] }}
+                    downloads
+
+                </p>
+
+
+                <a
+                    href="{{ url_for(
+                        'media_details',
+                        media_id=item['id']
+                    ) }}"
+                    class="view-btn"
+                >
+                    View
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- =====================================================
+     YOU MAY ALSO LIKE
+===================================================== -->
+
+{% if recommendations %}
+
+<section class="recommendations-section">
+
+    <h2>
+        🎯 You May Also Like
+    </h2>
+
+    <div class="recommendations-grid">
+
+        {% for item in recommendations %}
+
+        <div class="recommendation-card">
+
+            {% if item["thumbnail"] %}
+
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename='images/' + item['thumbnail']
+                    ) }}"
+                    alt="{{ item['title'] }}"
+                >
+
+            {% endif %}
+
+            <div class="recommendation-content">
+
+                <h3>
+                    {{ item["title"] }}
+                </h3>
+
+                <p>
+                    {{ item["description"] }}
+                </p>
+
+                <span class="recommendation-category">
+                    📂 {{ item["category"] }}
+                </span>
+
+                <a
+                    href="{{ url_for(
+                        'media_details',
+                        media_id=item['id']
+                    ) }}"
+                    class="recommendation-btn"
+                >
+                    View Media
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+{% endblock %}
