@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        MediaHub
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for(
+            'static',
+            filename='css/style.css'
+        ) }}"
+    >
+    
+    <!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ADMIN SESSION TEST
+===================================================== -->
+
+{% if session.get("admin_id") %}
+
+<div
+    style="
+        text-align:center;
+        padding:10px;
+        background:#e8f5e9;
+        color:#1b5e20;
+        font-weight:bold;
+    "
+>
+    🛠️ Admin ID:
+    {{ session.get("admin_id") }}
+
+    |
+    
+    Admin:
+    {{ session.get("admin_username") }}
+</div>
+
+{% endif %}
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-container">
+
+
+        <!-- LOGO -->
+
+        <a
+            href="{{ url_for('home') }}"
+            class="logo"
+        >
+
+            🎬
+
+            <span>
+                MediaHub
+            </span>
+
+        </a>
+
+
+        <!-- NAVIGATION -->
+
+        <div class="nav-links">
+
+
+            <!-- HOME -->
+
+            <a
+                href="{{ url_for('home') }}"
+                class="nav-link"
+            >
+                Home
+            </a>
+
+
+            <!-- VIDEOS -->
+
+            <a
+                href="{{ url_for('videos') }}"
+                class="nav-link"
+            >
+                Videos
+            </a>
+
+
+            <!-- AUDIO -->
+
+            <a
+                href="{{ url_for('audio') }}"
+                class="nav-link"
+            >
+                Audio
+            </a>
+
+
+            <!-- =================================================
+                 ADMIN LINKS
+            ================================================== -->
+
+            {% if session.get("admin_id") %}
+
+                <!-- ADMIN DASHBOARD -->
+
+                <a
+                    href="{{ url_for('admin_dashboard') }}"
+                    class="nav-link"
+                >
+                    🛠️ Dashboard
+                </a>
+
+
+                <!-- UPLOAD -->
+
+                <a
+                    href="{{ url_for('upload') }}"
+                    class="nav-link"
+                >
+                    📤 Upload
+                </a>
+
+
+                <!-- ADMIN NAME -->
+
+                <span class="welcome-user">
+                    👨‍💼
+                    {{ session.get("admin_username") }}
+                </span>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 USER LOGIN
+            ================================================== -->
+
+            {% if session.get("user_id") %}
+
+
+                <!-- PROFILE -->
+
+                <a
+                    href="{{ url_for('profile') }}"
+                    class="nav-link"
+                >
+                    👤 Profile
+                </a>
+
+
+                <!-- USERNAME -->
+
+                <span class="welcome-user">
+                    👋 {{ session.get("username") }}
+                </span>
+
+
+                <!-- USER LOGOUT -->
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="nav-button logout-button"
+                >
+                    Logout
+                </a>
+
+
+            {% else %}
+
+
+                <!-- LOGIN -->
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="nav-link"
+                >
+                    Login
+                </a>
+                
+                
+                <a href="{{ url_for('admin_login') }}" class="nav-link">
+    🛠️ Admin Login
+</a>
+
+
+                <!-- REGISTER -->
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="nav-button"
+                >
+                    Register
+                </a>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="container">
+
+    {% block content %}
+
+    {% endblock %}
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <p>
+        © 2026 MediaHub. All rights reserved.
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
