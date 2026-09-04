@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ category_name }} - Media
+{% endblock %}
+
+{% block content %}
+
+<h1>
+    📂 {{ category_name }}
+</h1>
+
+{% if media %}
+
+<div class="media-grid">
+
+    {% for item in media %}
+
+    <div class="media-card">
+
+        {% if item["thumbnail"] %}
+
+        <img
+            src="{{ url_for(
+                'thumbnail',
+                filename=item['thumbnail']
+            ) }}"
+            class="thumbnail"
+            alt="{{ item['title'] }}"
+        >
+
+        {% endif %}
+
+
+        <h3>
+            {{ item["title"] }}
+        </h3>
+
+
+        {% if item["description"] %}
+
+        <p>
+            {{ item["description"] }}
+        </p>
+
+        {% endif %}
+
+
+        <p>
+            📂 {{ item["category"] }}
+        </p>
+
+
+        <p>
+            📥 {{ item["downloads"] }}
+            downloads
+        </p>
+
+
+        {% if item["media_type"] == "video" %}
+
+        <video
+            controls
+            class="media-player"
+        >
+
+            <source
+                src="{{ url_for(
+                    'stream_media',
+                    media_id=item['id']
+                ) }}"
+            >
+
+            Your browser does not support
+            video playback.
+
+        </video>
+
+
+        {% elif item["media_type"] == "audio" %}
+
+        <audio
+            controls
+            class="audio-player"
+        >
+
+            <source
+                src="{{ url_for(
+                    'stream_media',
+                    media_id=item['id']
+                ) }}"
+            >
+
+            Your browser does not support
+            audio playback.
+
+        </audio>
+
+        {% endif %}
+
+
+        <br>
+
+
+        <a
+            href="{{ url_for(
+                'download',
+                media_id=item['id']
+            ) }}"
+            class="download-btn"
+        >
+            📥 Download
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty-message">
+
+    <h2>
+        No media found
+    </h2>
+
+    <p>
+        There are currently no files
+        in this category.
+    </p>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
