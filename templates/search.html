@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search - MediaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>🔎 Search</h1>
+
+
+<form
+    class="search-box"
+    action="{{ url_for('search') }}"
+    method="GET"
+>
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search media..."
+        value="{{ query }}"
+        required
+    >
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+
+{% if query %}
+
+<h2>
+    Results for "{{ query }}"
+</h2>
+
+{% endif %}
+
+
+{% if media %}
+
+<div class="media-grid">
+
+    {% for item in media %}
+
+    <div class="media-card">
+
+        <h3>
+            {{ item["title"] }}
+        </h3>
+
+        <p>
+            {{ item["description"] }}
+        </p>
+
+        <p>
+            {{ item["media_type"] }}
+        </p>
+
+        <p>
+            📂 {{ item["category"] }}
+        </p>
+
+        <a
+            class="download-btn"
+            href="{{ url_for(
+                'download',
+                media_id=item['id']
+            ) }}"
+        >
+            📥 Download
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% elif query %}
+
+<p>
+    No media found for "{{ query }}".
+</p>
+
+{% endif %}
+
+{% endblock %}
