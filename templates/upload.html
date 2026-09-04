@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}
+Upload Media
+{% endblock %}
+
+{% block content %}
+
+<h1>📤 Upload Media</h1>
+
+<form
+    method="POST"
+    enctype="multipart/form-data"
+>
+
+    <p>
+
+        <label>
+            Title
+        </label>
+
+        <br>
+
+        <input
+            type="text"
+            name="title"
+            placeholder="Media title"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <label>
+            Description
+        </label>
+
+        <br>
+
+        <textarea
+            name="description"
+            rows="5"
+            placeholder="Description"
+        ></textarea>
+
+    </p>
+
+
+    <label>
+    Category
+</label>
+
+<br>
+
+<select name="category" required>
+
+    <option value="">
+        Select category
+    </option>
+
+    <option value="Gospel">
+        Gospel
+    </option>
+
+    <option value="Music">
+        Music
+    </option>
+
+    <option value="Sermons">
+        Sermons
+    </option>
+
+    <option value="Education">
+        Education
+    </option>
+
+    <option value="Movies">
+        Movies
+    </option>
+
+    <option value="Other">
+        Other
+    </option>
+
+</select>
+
+
+    <p>
+
+        <label>
+            Media Type
+        </label>
+
+        <br>
+
+        <select
+            name="media_type"
+            required
+        >
+
+            <option value="">
+                Select type
+            </option>
+
+            <option value="video">
+                Video
+            </option>
+
+            <option value="audio">
+                Audio
+            </option>
+
+        </select>
+
+    </p>
+
+
+    <p>
+
+        <label>
+            Media File
+        </label>
+
+        <br>
+
+        <input
+            type="file"
+            name="file"
+            required
+        >
+
+    </p>
+
+
+    <p>
+
+        <label>
+            Thumbnail / Cover Image
+        </label>
+
+        <br>
+
+        <input
+            type="file"
+            name="thumbnail"
+            accept=".jpg,.jpeg,.png,.webp"
+        >
+
+    </p>
+
+
+    <button type="submit">
+        📤 Upload Media
+    </button>
+
+</form>
+
+{% endblock %}
