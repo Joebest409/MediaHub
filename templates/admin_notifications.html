@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Notifications
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-dashboard">
+
+    <div class="admin-header">
+
+        <h1>
+            🔔 Notifications
+        </h1>
+
+        <p>
+            Recent activity on MediaHub.
+        </p>
+
+    </div>
+
+
+    <div class="admin-actions">
+
+        <a
+            href="{{ url_for('admin_dashboard') }}"
+            class="admin-btn"
+        >
+            📊 Dashboard
+        </a>
+        
+        <a
+    href="{{ url_for('admin_notifications') }}"
+    class="admin-btn"
+>
+    🔔 Notifications
+
+    {% if unread_notifications > 0 %}
+
+        ({{ unread_notifications }})
+
+    {% endif %}
+
+</a>
+
+        <a
+            href="{{ url_for('admin_users') }}"
+            class="admin-btn"
+        >
+            👥 Users
+        </a>
+
+        <a
+            href="{{ url_for('admin_downloads') }}"
+            class="admin-btn"
+        >
+            📥 Downloads
+        </a>
+
+    </div>
+
+
+    <div class="media-management">
+
+        <h2>
+            🔔 Recent Notifications
+        </h2>
+
+        {% for notification in notifications %}
+
+        <div class="notification-item">
+
+            <div>
+
+                {% if notification["notification_type"] == "user" %}
+
+                    👤
+
+                {% elif notification["notification_type"] == "upload" %}
+
+                    📤
+
+                {% elif notification["notification_type"] == "download" %}
+
+                    📥
+
+                {% elif notification["notification_type"] == "favorite" %}
+
+                    ❤️
+
+                {% else %}
+
+                    🔔
+
+                {% endif %}
+
+                <strong>
+                    {{ notification["message"] }}
+                </strong>
+
+            </div>
+
+            <small>
+                {{ notification["created_at"] }}
+            </small>
+
+        </div>
+
+        {% else %}
+
+        <p style="text-align:center;">
+
+            🔕 No notifications yet.
+
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
