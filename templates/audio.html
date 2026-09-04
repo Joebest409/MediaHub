@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}
+Audio - MediaHub
+{% endblock %}
+
+
+{% block content %}
+
+<h1>🎵 Audio</h1>
+
+<p>
+    Browse our available audio.
+</p>
+
+
+{% if media %}
+
+<div class="media-grid">
+
+    {% for item in media %}
+
+    <div class="media-card">
+
+        <h3>
+            {{ item["title"] }}
+        </h3>
+
+        <p>
+            {{ item["description"] }}
+        </p>
+
+        <p>
+            📂 {{ item["category"] }}
+        </p>
+
+        <p>
+            📥 {{ item["downloads"] }} downloads
+        </p>
+
+        <a
+            class="download-btn"
+            href="{{ url_for(
+                'download',
+                media_id=item['id']
+            ) }}"
+        >
+            📥 Download Audio
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<p>
+    No audio available.
+</p>
+
+{% endif %}
+
+{% endblock %}
