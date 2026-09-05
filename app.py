@@ -53,18 +53,41 @@ MAIL_PASSWORD = os.environ.get(
 # DATABASE
 # =========================================================
 
-DATABASE = "database.db"
+DATA_FOLDER = "/var/data"
+
+DATABASE = os.path.join(
+    DATA_FOLDER,
+    "database.db"
+)
 
 
 # =========================================================
 # FOLDERS
 # =========================================================
 
-VIDEO_FOLDER = "uploads/videos"
-AUDIO_FOLDER = "uploads/audio"
-THUMBNAIL_FOLDER = "uploads/thumbnails"
-PROFILE_FOLDER = "uploads/profiles"
+VIDEO_FOLDER = os.path.join(
+    DATA_FOLDER,
+    "uploads",
+    "videos"
+)
 
+AUDIO_FOLDER = os.path.join(
+    DATA_FOLDER,
+    "uploads",
+    "audio"
+)
+
+THUMBNAIL_FOLDER = os.path.join(
+    DATA_FOLDER,
+    "uploads",
+    "thumbnails"
+)
+
+PROFILE_FOLDER = os.path.join(
+    DATA_FOLDER,
+    "uploads",
+    "profiles"
+)
 app.config["VIDEO_FOLDER"] = VIDEO_FOLDER
 app.config["AUDIO_FOLDER"] = AUDIO_FOLDER
 app.config["THUMBNAIL_FOLDER"] = THUMBNAIL_FOLDER
@@ -3248,9 +3271,18 @@ def reset_password(token):
 # RUN APP
 # =========================================================
 
-if __name__ == "__main__":
-    init_db()
+# =========================================================
+# INITIALIZE DATABASE
+# =========================================================
 
+init_db()
+
+
+# =========================================================
+# RUN APP LOCALLY
+# =========================================================
+
+if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=5000
